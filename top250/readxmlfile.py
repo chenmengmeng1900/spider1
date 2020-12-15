@@ -21,10 +21,17 @@ def main():
 # 影片链接
 findLink = re.compile(r'<a href="(.*?)">')
 # 影片图片
-findImgSrc = re.compile(r'<img.*src="(.*?">)',re.S)
-# 影片评分
-findRating = re.compile(r'<span class="rating_num" property="v:average">(.*)</span>')
+findImgSrc = re.compile(r'<img.*src="(.*?)".*/>',re.S)
+
+# 查找电影名字
+findTitle = re.compile(r'<span class="title">(.*)</span>')
+
 #影片名字
+
+
+findRating = re.compile(r'<span class="rating_num" property="v:average">(.*)</span>')
+
+# 影片评分
 
 #影片评价
 findJudge= re.compile(r'<span>(\d*?)人评价</span>')
@@ -32,8 +39,7 @@ findJudge= re.compile(r'<span>(\d*?)人评价</span>')
 findDis = re.compile(r'<span class="inq">(.*?)</span>')
 # 找到影片相关内容
 findDb = re.compile(r'<p class="">(.*?)<div class="star">',re.S)
-# 查找电影名字
-findTitle = re.compile(r'<span class="title">(.*)</span>')
+
 
 
 def oneurldata(url):
@@ -56,7 +62,7 @@ def oneurldata(url):
 # 爬取网页 获取数据
 def getData(baseurl):
     datalist=[]
-    for i in range(0, 1):
+    for i in range(0,25):
         url = baseurl + str(i*25)
         html = oneurldata(url)
         soup = BeautifulSoup(html, "html.parser")
@@ -75,8 +81,11 @@ def getData(baseurl):
             if len(titles)==2:
                 ctitle = titles[0]  # 添加中文名
                 data.append(ctitle)
-                otitle = titles[1].replace("/","")  # 添加外文名并去掉里面的符号
+                otitle = titles[1].replace("\n","")
+                otitle = titles[1].replace("/","") # 添加外文名并去掉里面的符号
+
                 data.append(otitle)
+                # titles = re.sub("\n", " ", titles)
             else:
                 data.append(titles[0])
                 data.append(' ') # 留空.
@@ -91,13 +100,15 @@ def getData(baseurl):
             else:
                 data.append(" ")
 
-            Db = re.findall(findDb,item)
-            Db = re.sub('<br(\s+)?/',)
-            data.append(Db)
-            Title = re.findall(findTitle,item)
-            Title = re.trim(Title)
-            Title = re.sub("\n", "")
-            data.append(Title)
+            Db = re.findall(findDb,item)[0]
+            Db = re.sub('<br(\s+)?/>(\s+)?'," ",Db) #替换空格
+            Db = re.sub("/"," ",Db)
+            data.append(Db.strip()) #去掉空格
+
+            datalist.append(data) #吧处理好的电影放入datalist
+
+
+    # print(datalist)
 
 
 

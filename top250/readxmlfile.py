@@ -14,9 +14,11 @@ def main():
     # 其实就是主类，吧所有的赋值后的参数放进来
     baseurl = "https://movie.douban.com/top250?start="
     # 用双斜杠或者前面加r
-    savepath = "./top250.html"
+    savepath = ".\\top250.xls"
+    datalist = getData(baseurl)
     # oneurldata(baseurl)
-    getData(baseurl)
+
+    saveData(datalist,savepath)
 
 # 影片链接
 findLink = re.compile(r'<a href="(.*?)">')
@@ -26,13 +28,8 @@ findImgSrc = re.compile(r'<img.*src="(.*?)".*/>',re.S)
 # 查找电影名字
 findTitle = re.compile(r'<span class="title">(.*)</span>')
 
-#影片名字
-
-
-findRating = re.compile(r'<span class="rating_num" property="v:average">(.*)</span>')
-
 # 影片评分
-
+findRating = re.compile(r'<span class="rating_num" property="v:average">(.*)</span>')
 #影片评价
 findJudge= re.compile(r'<span>(\d*?)人评价</span>')
 #影片描述
@@ -108,9 +105,6 @@ def getData(baseurl):
             datalist.append(data) #吧处理好的电影放入datalist
 
 
-    # print(datalist)
-
-
 
     return datalist
 
@@ -118,12 +112,23 @@ def getData(baseurl):
 
 
 
-def saveData(savepath):
-    pass
+def saveData(datalist,savepath):
+    book = xlwt.Workbook(encoding="utf-8",style_compression=0)
+    sheet = book.add_sheet("sheet1",cell_overwrite_ok=True)  # 创建工作表
+    col = ("影片连接","影片图片","影片名称","影片评分","影片评价","影片描述","影片内容")
+    for i in range(0,7):
+        sheet.write(0,i,col[i])
+    for i in range(0,250):
+        print("第%d条"%(i+1))
+        data = datalist[i]
+        for j in range(0,7):
+            sheet.write(i+1,j,data[j])
+    book.save("top250.xls")
 
 
 if __name__ == "__main__":
     main()
+    print("抓取完毕")
 
 
 

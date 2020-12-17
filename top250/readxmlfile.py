@@ -6,6 +6,7 @@ import urllib.error
 import xlwt
 
 
+
 # file = open("./top250.html","r",encoding="utf-8")
 # html = file.read()
 
@@ -40,14 +41,21 @@ findDb = re.compile(r'<p class="">(.*?)<div class="star">',re.S)
 
 
 def oneurldata(url):
-    header = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36'}
+    header ={
+    # 'Accept-Encoding': 'gzip, deflate, sdch',
+    # 'Accept-Language': 'en-US,en;q=0.8',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+    # 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    # 'Referer': 'http://www.wikipedia.org/',
+    # 'Connection': 'keep-alive',
+}
 
     request = urllib.request.Request(url,headers=header)
 
     html = ""
     try:
         response = urllib.request.urlopen(request)
-        html = response.read().decode("utf-8")
+        html = response.read()
         # print(html)
     except urllib.error.URLError as e:
         if hasattr(e,"code"):
